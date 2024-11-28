@@ -15,7 +15,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5001/auth/login", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/login`, {
         email,
         password,
       });
@@ -32,7 +32,7 @@ const Login = () => {
   // Handle Google Login
   const handleGoogleLogin = async (googleResponse) => {
     try {
-      const response = await axios.post("http://localhost:5001/auth/google-login", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/google-login`, {
         idToken: googleResponse.credential,
       });
       setUser(response.data.user);

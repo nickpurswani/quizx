@@ -10,7 +10,7 @@ const Result = () => {
   useEffect(() => {
     const evaluateQuiz = async () => {
       try {
-        const response = await axios.post("http://localhost:5001/quiz/evaluate-quiz", {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/quiz/evaluate-quiz`, {
           responses: quizState.responses,
         });
         setReport(response.data.report);

@@ -11,7 +11,7 @@ const StartQuiz = () => {
     const startQuiz = async () => {
       setQuizState((prev) => ({ ...prev, isLoading: true }));
       try {
-        const response = await axios.post("http://localhost:5001/quiz/start-quiz");
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/quiz/start-quiz`);
         setQuizState((prev) => ({
           ...prev,
           currentQuestion: response.data.question,

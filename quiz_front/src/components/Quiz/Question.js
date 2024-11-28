@@ -92,7 +92,7 @@ const Question = () => {
     if (!selectedOption) return;
 
     try {
-      const response = await axios.post("http://localhost:5001/quiz/submit-answer", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/quiz/submit-answer`, {
         questionId: quizState.currentQuestion._id,
         answer: selectedOption,
       });
