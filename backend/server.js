@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(
   cors({
-    origin: "http://localhost:3000", // Replace with your frontend URL
+    origin: `${process.env.FRONTEND_URL}`, // Replace with your frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Include credentials like cookies, authorization headers, etc.
   })

@@ -7,7 +7,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://2394-45-118-158-177.ngrok-free.app/auth/google/callback",
+      callbackURL: `${process.env.FRONTENDURL}`,
     },
     async (accessToken, refreshToken, profile, done) => {
       const { id, displayName, emails, photos } = profile; // Extract profile details
