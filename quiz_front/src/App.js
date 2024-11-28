@@ -11,7 +11,7 @@ import Signup from "./components/Auth/Signup";
 const App = () => {
   
   console.log(process.env.REACT_APP_BACKEND_URL);
-  console.log(process.env)
+  
   return (
     <QuizProvider>
       <Router>
