@@ -84,27 +84,41 @@ router.get("/google/callback", async (req, res) => {
       code,
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${process.env.FRONTEND_URL}/dashboard`,
       grant_type: "authorization_code",
     });
 
-    const { id_token, access_token } = tokenResponse.data;
+    const { id_token } = tokenResponse.data;
 
-    // Optionally verify and decode the ID token
-    const userInfo = jwt.decode(id_token);
+    // Decode the Google ID token to extract the user's Google ID
+    const decoded = jwt.decode(id_token);
+    const googleId = decoded.sub;
 
-    // Generate your own JWT if needed
-    const appToken = jwt.sign({ id: userInfo.sub, email: userInfo.email }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    if (!googleId) {
+      return res.status(400).send("Failed to retrieve Google ID!");
+    }
 
-    // Redirect to frontend with your app token
+    // Check if the user exists in the database
+    const user = await User.findOne({ googleId });
+
+    if (!user) {
+      return res.status(404).send("User not found in the database!");
+    }
+
+    // Generate your own JWT token
+    const appToken = jwt.sign(
+      { id: user._id, email: user.email }, // Payload
+      process.env.JWT_SECRET, // Secret key
+      { expiresIn: "1d" } // Token validity
+    );
+
+    // Redirect to frontend with the app token
     res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${appToken}`);
   } catch (error) {
-    console.error("Error exchanging code for token:", error.response.data);
+    console.error("Error during Google OAuth callback:", error.response?.data || error.message);
     res.status(500).send("Failed to authenticate with Google");
   }
 });
+
 
 
 // Logout

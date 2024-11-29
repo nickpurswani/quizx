@@ -59,9 +59,9 @@ const Login = () => {
       </form>
 
       {/* Google Login Button */}
-      <button className={styles.googleButton} onClick={handleGoogleLogin}>
+      {/* <button className={styles.googleButton} onClick={handleGoogleLogin}>
         Login with Google
-      </button>
+      </button> */}
     </div>
   );
 };
