@@ -71,6 +71,41 @@ router.get(
     });res.status(200).json({ message: "Login successful!", token });
   }
 );
+router.get("/auth/google/callback", async (req, res) => {
+  const code = req.query.code;
+
+  if (!code) {
+    return res.status(400).send("Authorization code not provided!");
+  }
+
+  try {
+    // Exchange the code for tokens
+    const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${process.env.FRONTEND_URL}/dashboard`,
+      grant_type: "authorization_code",
+    });
+
+    const { id_token, access_token } = tokenResponse.data;
+
+    // Optionally verify and decode the ID token
+    const userInfo = jwt.decode(id_token);
+
+    // Generate your own JWT if needed
+    const appToken = jwt.sign({ id: userInfo.sub, email: userInfo.email }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    // Redirect to frontend with your app token
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${appToken}`);
+  } catch (error) {
+    console.error("Error exchanging code for token:", error.response.data);
+    res.status(500).send("Failed to authenticate with Google");
+  }
+});
+
 
 // Logout
 router.get("/logout", (req, res) => {
