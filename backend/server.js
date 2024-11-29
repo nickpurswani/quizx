@@ -9,6 +9,7 @@ require("./config/passport");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
+console.log(process.env)
 app.use(
   cors({
     origin: `${process.env.FRONTEND_URL}`, // Replace with your frontend URL
