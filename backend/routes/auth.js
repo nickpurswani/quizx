@@ -71,7 +71,7 @@ router.get(
     });res.status(200).json({ message: "Login successful!", token });
   }
 );
-router.get("/auth/google/callback", async (req, res) => {
+router.get("/google/callback", async (req, res) => {
   const code = req.query.code;
 
   if (!code) {
