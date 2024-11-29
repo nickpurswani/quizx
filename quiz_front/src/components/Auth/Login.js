@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useQuiz } from "../../context/QuizContext";
@@ -30,36 +30,9 @@ const Login = () => {
   };
 
   // Handle Google Login
-  const handleGoogleLogin = async (googleResponse) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/google-login`, {
-        idToken: googleResponse.credential,
-      });
-      setUser(response.data.user);
-      localStorage.setItem("token", response.data.token); // Store JWT
-      setMessage("Login successful!");
-      navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setMessage("Google login failed. Try again.");
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
   };
-
-  // Initialize Google Sign-In
-  useEffect(() => {
-    /* global google */
-    if (window.google) {
-      google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID",
-        callback: handleGoogleLogin,
-      });
-      google.accounts.id.renderButton(
-        document.getElementById("google-login-button"),
-        { theme: "outline", size: "large" }
-      );
-    }
-  }, []);
-
 
   return (
     <div className={styles.container}>
@@ -82,9 +55,13 @@ const Login = () => {
         />
         <button type="submit">Login</button>
         {message && <p className={styles.message}>{message}</p>}
-        <a href="/signup">Sign Up</a><div id="google-login-button"></div> {/* Google Sign-In Button */}
+        <a href="/signup">Sign Up</a>
       </form>
-      
+
+      {/* Google Login Button */}
+      <button className={styles.googleButton} onClick={handleGoogleLogin}>
+        Login with Google
+      </button>
     </div>
   );
 };

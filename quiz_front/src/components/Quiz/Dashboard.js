@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import {
@@ -50,6 +50,11 @@ const styles = {
     cursor: "pointer",
     transition: "background-color 0.3s ease",
   },
+  errorMessage: {
+    color: "red",
+    fontSize: "16px",
+    marginTop: "20px",
+  },
 };
 
 const pastQuizData = [
@@ -73,10 +78,39 @@ const createChartData = (data) => ({
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    // Check for token in query params or localStorage
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromQuery = params.get("token");
+    const tokenFromStorage = localStorage.getItem("token");
+
+    if (tokenFromQuery) {
+      // If token is passed via query params, store it in localStorage
+      localStorage.setItem("token", tokenFromQuery);
+      setIsAuthenticated(true);
+    } else if (tokenFromStorage) {
+      // Validate token from localStorage
+      setIsAuthenticated(true);
+    } else {
+      setErrorMessage("You must log in to access the dashboard.");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleStartQuiz = () => {
     navigate("/start");
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={styles.container}>
+        <p style={styles.errorMessage}>{errorMessage}</p>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
